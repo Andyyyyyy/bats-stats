@@ -81,6 +81,10 @@ main {
   text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
 }
 
+.table.loading {
+  opacity: 0.5;
+}
+
 .table-wrap {
 }
 
@@ -209,6 +213,14 @@ p {
   margin: 0;
   padding: 1.25rem;
   color: #fff;
+}
+
+.sorting {
+  display: flex;
+  justify-content: end;
+  gap: .5rem;
+  font-size: 1.15rem;
+  margin-block: 1rem;
 }
 
 @media (min-width: 900px) {

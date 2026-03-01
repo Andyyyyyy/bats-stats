@@ -121,7 +121,8 @@ bot.action(/^player_(.+)$/, (ctx) => {
         'HIGH_FINISH',
         'SHORT_LEG',
         'D1_FINISH',
-        'BULL_FINISH'
+        'BULL_FINISH',
+        'HIGH_SCORE'
     ];
 
     const buttons = highlightTypes.map(type =>
@@ -140,7 +141,7 @@ bot.action(/^type_(.+)$/, (ctx) => {
 
     currentDraft.type = type;
 
-    if (type == 'HIGH_FINISH' || type == 'SHORT_LEG' || type == 'BULL_FINISH') {
+    if (type == 'HIGH_FINISH' || type == 'SHORT_LEG' || type == 'BULL_FINISH' || type == 'HIGH_SCORE') {
         ctx.sendMessage('Insert Value')
         botstate = botstates.AWAIT_VALUE;
     } else {

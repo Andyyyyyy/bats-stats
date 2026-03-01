@@ -1,22 +1,36 @@
-const loadingEl = document.querySelector('.loading');
 const tableEl = document.querySelector('.table');
+const sortingTypeEl = document.querySelector('#sorting-type');
+const loadingEl = document.querySelector('.loading');
 
 function showLoading() {
-    loadingEl?.classList.remove('hidden');
-    tableEl?.classList.add('hidden');
+    if (!tableEl) {
+        return;
+    }
+
+    tableEl.classList.remove('hidden');
+    tableEl.classList.add('loading');
 }
 
 function showTable() {
-    loadingEl?.classList.add('hidden');
-    tableEl?.classList.remove('hidden');
+    if (!tableEl) {
+        return;
+    }
+
+    tableEl.classList.remove('hidden');
+    tableEl.classList.remove('loading');
+}
+
+function getSelectedType() {
+    return sortingTypeEl?.value || 'recent';
 }
 
 async function loadHighlights() {
     showLoading();
     const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+    const query = new URLSearchParams({ type: getSelectedType() });
 
     try {
-        const response = await fetch(baseUrl + '/api/highlights');
+        const response = await fetch(`${baseUrl}/api/highlights?${query.toString()}`);
 
         if (!response.ok) {
             throw new Error(`Request failed with status ${response.status}`);
@@ -55,6 +69,8 @@ function translateHighlight(type) {
             return 'Mad House';
         case 'BULL_FINISH':
             return 'Bull Finishes';
+        case 'HIGH_SCORE':
+            return 'Highscores';
         default:
             return type;
     }
@@ -231,4 +247,11 @@ function populateData(data) {
     bindCardToggles();
 }
 
-document.addEventListener('DOMContentLoaded', loadHighlights);
+document.addEventListener('DOMContentLoaded', () => {
+    loadingEl?.classList.add('hidden');
+    loadHighlights();
+});
+
+if (sortingTypeEl) {
+    sortingTypeEl.addEventListener('change', loadHighlights);
+}

@@ -15,7 +15,9 @@ app.get('/api/highlights', (req, res) => {
     SELECT * FROM highlights
     ORDER BY created_at DESC
   `).all();
-
+    
+  const orderParam = String(req.query.type || 'recent');
+    
     for (const row of rows) {
         const { player, type, value, comment, created_at } = row;
 
@@ -29,8 +31,6 @@ app.get('/api/highlights', (req, res) => {
             result[player][type] = [];
         }
 
-        // Special case: 180 → only return dates
-
         result[player][type].push({
             date,
             value: value || '',
@@ -38,8 +38,15 @@ app.get('/api/highlights', (req, res) => {
         });
     }
 
+    const sortedResult = Object.fromEntries(
+        Object.entries(result).sort(([, aStats], [, bStats]) => {
+            const aCount = Array.isArray(aStats[orderParam]) ? aStats[orderParam].length : 0;
+            const bCount = Array.isArray(bStats[orderParam]) ? bStats[orderParam].length : 0;
+            return bCount - aCount;
+        })
+    );
 
-    res.json(result);
+    res.json(sortedResult);
 });
 
 
